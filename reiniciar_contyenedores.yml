@@ -1,0 +1,10 @@
+---
+- name: Reiniciar contenedor Docker
+  hosts: wordpress
+  become: yes
+  tasks:
+    - name: Reiniciar contenedor de WordPress
+      docker_container:
+        name: wordpress
+        state: started
+        restart: yes

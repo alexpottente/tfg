@@ -1,0 +1,9 @@
+---
+- name: Detener contenedores Docker
+  hosts: wordpress
+  become: yes
+  tasks:
+    - name: Detener contenedor de WordPress
+      docker_container:
+        name: wordpress
+        state: stopped
