@@ -1,0 +1,46 @@
+---
+- name: lanzar WordPress Docker con RDS
+  hosts: wordpress
+  become: yes
+  vars:
+    wordpress_db_host: "tfg.c8ytibhyb2vy.us-east-1.rds.amazonaws.com"
+    wordpress_db_name: "wordpress"
+    wordpress_db_user: "admin"
+    wordpress_db_password: "Almi1234"
+
+  tasks:
+    - name: Verificar si Docker está instalado
+      shell: dpkg -l | grep docker.io
+      register: docker_installed
+      ignore_errors: yes
+
+    - name: Instalar Docker si no está instalado
+      apt:
+        name: docker.io
+        state: present
+      when: docker_installed.rc != 0
+
+    - name: Iniciar el servicio Docker si ya está instalado
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: lanzar la imagen de WordPress
+      docker_image:
+        name: wordpress:latest
+        source: pull
+
+    - name: correr el contenedor con Docker
+      docker_container:
+        name: wordpress
+        image: wordpress:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "80:80"
+        env:
+          WORDPRESS_DB_HOST: "{{ wordpress_db_host }}"
+          WORDPRESS_DB_NAME: "{{ wordpress_db_name }}"
+          WORDPRESS_DB_USER: "{{ wordpress_db_user }}"
+          WORDPRESS_DB_PASSWORD: "{{ wordpress_db_password }}"

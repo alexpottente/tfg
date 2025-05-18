@@ -1,0 +1,15 @@
+- name: Borrar WordPress Docker y limpiar entorno
+  hosts: wordpress
+  become: yes
+
+  tasks:
+    - name: Detener y eliminar contenedor WordPress
+      docker_container:
+        name: wordpress
+        state: absent
+        force_kill: yes
+
+    - name: Eliminar la imagen de WordPress
+      docker_image:
+        name: wordpress
+        state: absent

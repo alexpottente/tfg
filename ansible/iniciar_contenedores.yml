@@ -1,0 +1,8 @@
+- name: iniciar contenedores Docker
+  hosts: wordpress
+  become: yes
+  tasks:
+    - name: iniciar contenedor de WordPress
+      docker_container:
+        name: wordpress
+        state: started
